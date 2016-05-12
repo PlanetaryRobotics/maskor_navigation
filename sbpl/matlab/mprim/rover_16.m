@@ -41,13 +41,13 @@ UNICYCLE_MPRIM_16DEGS = 1;
 
 
 if UNICYCLE_MPRIM_16DEGS == 1
-    resolution = 0.05;
+    resolution = 0.15;
     numberofangles = 16; %preferably a power of 2, definitely multiple of 8
     numberofprimsperangle = 11;
 
     %multipliers (multiplier is used as costmult*cost)
     forwardcostmult = 1;
-    backwardcostmult = 10;
+    backwardcostmult = 1;
     forwardandturncostmult = 2;
     sidestepcostmult = 20;
     turninplacecostmult = 20;

@@ -170,7 +170,8 @@ namespace pose_follower {
     if (test_vel.linear.x < 0)
        test_vel.angular.z = -test_vel.angular.z;
 
-    bool legal_traj = collision_planner_.checkTrajectory(test_vel.linear.x, test_vel.linear.y, test_vel.angular.z, true);
+    // bool legal_traj = collision_planner_.checkTrajectory(test_vel.linear.x, test_vel.linear.y, test_vel.angular.z, true);
+    bool legal_traj = true;
 
     double scaling_factor = 1.0;
     double ds = scaling_factor / samples_;
@@ -266,13 +267,13 @@ namespace pose_follower {
 
     //in the case that we're not rotating to our goal position and we have a non-holonomic robot
     //we'll need to command a rotational velocity that will help us reach our desired heading
-    
+
     //we want to compute a goal based on the heading difference between our pose and the target
-    double yaw_diff = headingDiff(pose1.getOrigin().x(), pose1.getOrigin().y(), 
+    double yaw_diff = headingDiff(pose1.getOrigin().x(), pose1.getOrigin().y(),
         pose2.getOrigin().x(), pose2.getOrigin().y(), tf::getYaw(pose2.getRotation()));
 
     //we'll also check if we can move more effectively backwards
-    double neg_yaw_diff = headingDiff(pose1.getOrigin().x(), pose1.getOrigin().y(), 
+    double neg_yaw_diff = headingDiff(pose1.getOrigin().x(), pose1.getOrigin().y(),
         pose2.getOrigin().x(), pose2.getOrigin().y(), M_PI + tf::getYaw(pose2.getRotation()));
 
     //check if its faster to just back up
@@ -301,14 +302,14 @@ namespace pose_follower {
     res.linear.x *= K_trans_;
     if(!holonomic_)
       res.linear.y = 0.0;
-    else    
+    else
       res.linear.y *= K_trans_;
     res.angular.z *= K_rot_;
 
     //make sure to bound things by our velocity limits
     double lin_overshoot = sqrt(res.linear.x * res.linear.x + res.linear.y * res.linear.y) / max_vel_lin_;
     double lin_undershoot = min_vel_lin_ / sqrt(res.linear.x * res.linear.x + res.linear.y * res.linear.y);
-    if (lin_overshoot > 1.0) 
+    if (lin_overshoot > 1.0)
     {
       res.linear.x /= lin_overshoot;
       res.linear.y /= lin_overshoot;
@@ -335,7 +336,7 @@ namespace pose_follower {
     return res;
   }
 
-  bool PoseFollower::transformGlobalPlan(const tf::TransformListener& tf, const std::vector<geometry_msgs::PoseStamped>& global_plan, 
+  bool PoseFollower::transformGlobalPlan(const tf::TransformListener& tf, const std::vector<geometry_msgs::PoseStamped>& global_plan,
       const costmap_2d::Costmap2DROS& costmap, const std::string& global_frame,
       std::vector<geometry_msgs::PoseStamped>& transformed_plan){
     const geometry_msgs::PoseStamped& plan_pose = global_plan[0];
@@ -350,8 +351,8 @@ namespace pose_follower {
       }
 
       tf::StampedTransform transform;
-      tf.lookupTransform(global_frame, ros::Time(), 
-          plan_pose.header.frame_id, plan_pose.header.stamp, 
+      tf.lookupTransform(global_frame, ros::Time(),
+          plan_pose.header.frame_id, plan_pose.header.stamp,
           plan_pose.header.frame_id, transform);
 
       tf::Stamped<tf::Pose> tf_pose;
